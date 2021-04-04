@@ -1,89 +1,138 @@
-import React, { useState } from 'react';
-import Cards from 'react-credit-cards';
+import React, { Component } from 'react';
+import Card from 'react-credit-cards';
 import 'react-credit-cards/lib/styles.scss';
 import './CardForm.scss';
+import {
+    formatCreditCardNumber,
+    formatCVC,
+    formatExpirationDate,
+    formatFormData
+  } from "../helpers/utils.js";
 
-
-function CardForm(){
-
-  const [number, setNumber] = useState('');
-  const [name, setName] = useState('');
-  const [expiry, setExpiry] = useState('');
-  const [cvc, setCvc] = useState('');
-  const [focus, setFocus] = useState('');
-      
-        return (
-            
-          <div id="PaymentForm">
-              <div class = "card">
-                <Cards
+export default class CardForm extends Component {
+    state = {
+      number: "",
+      name: "",
+      expiry: "",
+      cvc: "",
+      focused: "",
+      formData: null
+    };
+  
+  
+    handleInputFocus = ({ target }) => {
+      this.setState({
+        focused: target.name
+      });
+    };
+  
+    handleInputChange = ({ target }) => {
+      if (target.name === "number") {
+        target.value = formatCreditCardNumber(target.value);
+      } else if (target.name === "expiry") {
+        target.value = formatExpirationDate(target.value);
+      } else if (target.name === "cvc") {
+        target.value = formatCVC(target.value);
+      }
+  
+      this.setState({ [target.name]: target.value });
+    };
+  
+    handleSubmit = e => {
+      e.preventDefault();
+      const formData = [...e.target.elements]
+        .filter(d => d.name)
+        .reduce((acc, d) => {
+          acc[d.name] = d.value;
+          return acc;
+        }, {});
+  
+      this.setState({ formData });
+      this.form.reset();
+    };
+  
+    render() {
+      const { name, number, expiry, cvc, focused, formData } = this.state;
+  
+      return (
+        <div>
+          <div className="App-payment">
+            <h2 class="mb-5 text-center">Add your Credit Cards</h2>
+            <div class = "card">
+                <Card
                 number={number}
                 name={name}
                 expiry={expiry}
                 cvc={cvc}
-                focused={focus}
+                focused={focused}
                 />
-              </div>
-            <form class="form">
+            </div>
+            <form class="form" ref={c => (this.form = c)} onSubmit={this.handleSubmit}>
                 <div class="form-group ">
                     <label for="number">Card Number</label>
                     <input 
-                        class="form-control" 
-                        id="number"
-                        type='tel'
-                        name='number'
-                        placeholder='Card Number'
-                        value={number}
-                        onChange={e => setNumber(e.target.value)}
-                        onFocus={e => setFocus(e.target.name)}
+                        type="tel"
+                        name="number"
+                        className="form-control"
+                        placeholder="Card Number"
+                        pattern="[\d| ]{16,22}"
+                        required
+                        onChange={this.handleInputChange}
+                        onFocus={this.handleInputFocus}
                     />
                 </div>
                 <div class="form-group">
                     <label for="inputAddress">Name</label>
-                    <input 
-                        class="form-control" 
-                        id="inputAddress" 
-                        type='text'
-                        name='name'
-                        placeholder='Name'
-                        value={name}
-                        onChange={e => setName(e.target.value)}
-                        onFocus={e => setFocus(e.target.name)}
+                    <input
+                        type="text"
+                        name="name"
+                        className="form-control"
+                        placeholder="Name"
+                        required
+                        onChange={this.handleInputChange}
+                        onFocus={this.handleInputFocus}
                     />
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label for="inputCity">Expiry</label>
-                        <input 
-                            class="form-control" 
-                            id="inputCity"
-                            type='tel'
-                            name='expiry'
-                            placeholder='MM/YY'
-                            value={expiry}
-                            onChange={e => setExpiry(e.target.value)}
-                            onFocus={e => setFocus(e.target.name)}
-
+                        <input
+                            type="tel"
+                            name="expiry"
+                            className="form-control"
+                            placeholder="Valid Thru"
+                            pattern="\d\d/\d\d"
+                            required
+                            onChange={this.handleInputChange}
+                            onFocus={this.handleInputFocus}
                         />
                     </div>
                     <div class="form-group col-md-6">
                         <label for="cvc">CVC</label>
-                        <input 
-                            type='tel'
-                            name='cvc'
-                            placeholder='CVC'
-                            value={cvc}
-                            onChange={e => setCvc(e.target.value)}
-                            onFocus={e => setFocus(e.target.name)} 
-                            class="form-control" 
-                            id="cvc"
+                        <input
+                            type="tel"
+                            name="cvc"
+                            className="form-control"
+                            placeholder="CVC"
+                            required
+                            onChange={this.handleInputChange}
+                            onFocus={this.handleInputFocus}
                         />
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary btn-block">Add Card</button>
+                <div className="form-actions">
+                <button className="btn btn-primary btn-block">Add Card</button>
+              </div>
             </form>
-        </div>
-         );
-    }   
-
-export default CardForm;
+            {formData && (
+              <div className="App-highlight">
+                {formatFormData(formData).map((d, i) => (
+                  <div key={i}>{d}</div>
+                ))}
+              </div>
+            )}
+          </div>
+          </div>
+          )
+      }
+  }
