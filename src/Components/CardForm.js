@@ -57,7 +57,7 @@ export default class CardForm extends Component {
       return (
         <div>
           <div className="App-payment">
-            <h2 class="mb-5 text-center">Add your Credit Cards</h2>
+            <h2 class="mt-5 mb-4 text-center">Add your Credit Cards</h2>
             <div class = "card">
                 <Card
                 number={number}
