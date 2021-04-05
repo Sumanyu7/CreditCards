@@ -31,7 +31,3 @@ export function formatExpirationDate(value) {
     return null;
   }
 }
-
-export function formatFormData(data) {
-  return Object.keys(data).map(d => `${d}: ${data[d]}`);
-}

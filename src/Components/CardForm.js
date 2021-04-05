@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import Card from 'react-credit-cards';
-import 'react-credit-cards/lib/styles.scss';
-import './CardForm.scss';
+import firebase from "../helpers/firebase.js";
 import {
     formatCreditCardNumber,
     formatCVC,
     formatExpirationDate,
-    formatFormData
   } from "../helpers/utils.js";
+
+import 'react-credit-cards/lib/styles.scss';
+import './CardForm.scss';
 
 export default class CardForm extends Component {
     state = {
@@ -40,24 +41,29 @@ export default class CardForm extends Component {
   
     handleSubmit = e => {
       e.preventDefault();
-      const formData = [...e.target.elements]
-        .filter(d => d.name)
-        .reduce((acc, d) => {
-          acc[d.name] = d.value;
-          return acc;
-        }, {});
-  
-      this.setState({ formData });
-      this.form.reset();
+      const cardsRef = firebase.database().ref('cards/' + this.state.name );
+      const card = {
+        name: this.state.name,
+        number: this.state.number,
+        expiry: this.state.expiry,
+        cvc: this.state.cvc
+      }
+      cardsRef.push(card);
+      this.setState({
+        name: '',
+        number: '',
+        expiry: '',
+        cvc: ''
+      });
     };
   
     render() {
-      const { name, number, expiry, cvc, focused, formData } = this.state;
+      const { name, number, expiry, cvc, focused } = this.state;
   
       return (
         <div>
           <div className="App-payment">
-            <h2 class="mt-5 mb-4 text-center">Add your Credit Cards</h2>
+            <h2 class="mt-5 mb-4 pt-4 text-center">Add your Credit Cards</h2>
             <div class = "card">
                 <Card
                 number={number}
@@ -68,7 +74,7 @@ export default class CardForm extends Component {
                 />
             </div>
             <form class="form" ref={c => (this.form = c)} onSubmit={this.handleSubmit}>
-                <div class="form-group ">
+                <div class="form-group">
                     <label for="number">Card Number</label>
                     <input 
                         type="tel"
@@ -82,7 +88,7 @@ export default class CardForm extends Component {
                     />
                 </div>
                 <div class="form-group">
-                    <label for="inputAddress">Name</label>
+                    <label>Name</label>
                     <input
                         type="text"
                         name="name"
@@ -95,12 +101,12 @@ export default class CardForm extends Component {
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6">
-                        <label for="inputCity">Expiry</label>
+                        <label>Expiry</label>
                         <input
                             type="tel"
                             name="expiry"
                             className="form-control"
-                            placeholder="Valid Thru"
+                            placeholder="MM/YY"
                             pattern="\d\d/\d\d"
                             required
                             onChange={this.handleInputChange}
@@ -108,7 +114,7 @@ export default class CardForm extends Component {
                         />
                     </div>
                     <div class="form-group col-md-6">
-                        <label for="cvc">CVC</label>
+                        <label>CVC</label>
                         <input
                             type="tel"
                             name="cvc"
@@ -121,16 +127,12 @@ export default class CardForm extends Component {
                     </div>
                 </div>
                 <div className="form-actions">
-                <button className="btn btn-primary btn-block">Add Card</button>
+                  <button className="btn btn-primary btn-block">Add Card</button>
               </div>
             </form>
-            {formData && (
-              <div className="App-highlight">
-                {formatFormData(formData).map((d, i) => (
-                  <div key={i}>{d}</div>
-                ))}
+              <div className="text-danger">
+                <p>Card successfully added</p>
               </div>
-            )}
           </div>
           </div>
           )
