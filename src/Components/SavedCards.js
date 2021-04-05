@@ -10,26 +10,28 @@ export default class SavedCards extends Component {
             cards: []
         }
     }
-
+    //retrieves users cards from firebase
     getCards = e => {
-        e.preventDefault(); 
-        const cardsRef = firebase.database().ref('cards/' + this.state.enterName);
-        cardsRef.on('value', (snapshot) => {
-            let cards = snapshot.val();
-            let newState = [];
-            for (let card in cards) {
-                newState.push({
-                id: card,
-                name: cards[card].name,
-                number: cards[card].number,
-                expiry: cards[card].expiry,
-                cvc: cards[card].cvc,
+        e.preventDefault();
+        if(this.state.enterName !== '') { 
+            const cardsRef = firebase.database().ref('cards/' + this.state.enterName);
+            cardsRef.on('value', (snapshot) => {
+                let cards = snapshot.val();
+                let newState = [];
+                for (let card in cards) {
+                    newState.push({
+                        id: card,
+                        name: cards[card].name,
+                        number: cards[card].number,
+                        expiry: cards[card].expiry,
+                        cvc: cards[card].cvc,
+                    });
+                }
+                this.setState({
+                    cards: newState
                 });
-            }
-            this.setState({
-                cards: newState
-            });
-        });   
+            }); 
+        }  
     }
 
     deleteCard(cardId) {
@@ -42,20 +44,23 @@ export default class SavedCards extends Component {
         return (
             <div className="mt-5 pt-4">
                 <form onSubmit={this.getCards}>
-                    <label> Enter your name</label>
-                    <input 
-                        type="text"
-                        name="name"
-                        className="form-control"
-                        placeholder="Name"
-                        value={enterName}
-                        onChange={((e) => this.setState({enterName:e.target.value}))}
-                    />
+                    <div className="form-group">
+                        <label> Enter your name</label>
+                        <input 
+                            type="text"
+                            name="name"
+                            className="form-control search"
+                            placeholder="Name"
+                            value={enterName}
+                            onChange={((e) => this.setState({enterName:e.target.value}))}
+                        />
+                        <small className="form-text text-muted">Make sure its exactly same as on your cards</small>
+                    </div>
                     <button className="btn btn-primary">Submit</button>
                 </form>
-                <div className="wrapper">
+                <div className="container">
                     <h4 className="mt-5">Your Saved Cards</h4>
-                    <ul className="row text-center  list-group-flush">
+                    <ul className="row text-center list-group-flush">
                     {this.state.cards.map((card) => {
                         return (
                         <li className="list-group-item col-md-6 my-4" key={card.id}>

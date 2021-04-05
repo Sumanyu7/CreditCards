@@ -7,18 +7,18 @@ import { Navbar, Nav } from 'react-bootstrap';
 class navbar extends Component {
   render() {
     return (
-        <Navbar className="navbar" fixed="top">
+        <Navbar className="navbar" fixed="top" bg="dark">
             <Navbar.Brand href="/">
             <img
                 src={Logo}
-                width="100"
-                height="60"      
+                width="80"
+                height="50"      
                 className="d-inline-block align-top"
                 alt="Credit Crads Logo"
             />
             </Navbar.Brand>
             <Nav className="mr-auto">
-                <Nav.Link href="/saved">Saved Cards</Nav.Link>
+                <Nav.Link className="text-white" href="/saved">Saved Cards</Nav.Link>
             </Nav>
       </Navbar>
     );

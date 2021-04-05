@@ -1,4 +1,4 @@
-// Form Validation Functions
+// Form Input Format Validation Functions
 
 // This function is used to take only the numbers from user inputs
 function checkNumber(value = "") {
@@ -22,12 +22,6 @@ export function formatCVC(value) {
 
 export function formatExpirationDate(value) {
   const clearValue = checkNumber(value);
-  const month = `${clearValue.slice(0, 2)}`;
-  if(month <= 12){
-    return `${clearValue.slice(0, 2)}/${clearValue.slice(2, 4)}`;
-  }
-  else{
-    alert("Month cannot be more than 12");
-    return null;
-  }
+  return `${clearValue.slice(0, 2)}/${clearValue.slice(2, 4)}`;
+
 }

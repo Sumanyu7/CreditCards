@@ -17,16 +17,16 @@ export default class CardForm extends Component {
       expiry: "",
       cvc: "",
       focused: "",
-      formData: null
+      success: ""
     };
   
-  
+    // Highlights the input user is entering on the card
     handleInputFocus = ({ target }) => {
       this.setState({
         focused: target.name
       });
     };
-  
+    // Changes the card real-time based on user input 
     handleInputChange = ({ target }) => {
       if (target.name === "number") {
         target.value = formatCreditCardNumber(target.value);
@@ -39,6 +39,7 @@ export default class CardForm extends Component {
       this.setState({ [target.name]: target.value });
     };
   
+    // Submits form data to firebase
     handleSubmit = e => {
       e.preventDefault();
       const cardsRef = firebase.database().ref('cards/' + this.state.name );
@@ -53,12 +54,13 @@ export default class CardForm extends Component {
         name: '',
         number: '',
         expiry: '',
-        cvc: ''
+        cvc: '',
+        success: "Card Added Successfully",
       });
     };
   
     render() {
-      const { name, number, expiry, cvc, focused } = this.state;
+      const { name, number, expiry, cvc, focused, success } = this.state;
   
       return (
         <div>
@@ -129,12 +131,10 @@ export default class CardForm extends Component {
                 <div className="form-actions">
                   <button className="btn btn-primary btn-block">Add Card</button>
               </div>
+              <p className="text-danger mt-4">{success}</p>
             </form>
-              <div className="text-danger">
-                <p>Card successfully added</p>
-              </div>
           </div>
-          </div>
-          )
-      }
+        </div>
+      )
+    }
   }
