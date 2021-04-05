@@ -18,6 +18,8 @@ The aim of the project was to create a form handling page that does the followin
 
 ### Remarks
 
+Current Result: ![Homescreen](https://github.com/Sumanyu7/CreditCards/blob/master/Homescreen.png)
+
 For the most part, this task was a new and challenging learning experience for me. 
 I had the opportunity to improve my learning of React and learn about some new libraries mainly [react-credit-cards](https://github.com/amarofashion/react-credit-cards) 
 which I used to display credit cards.
