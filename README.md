@@ -1,8 +1,6 @@
 # CreditCards
 
-## Description
-
-This is my attempt for the Stomble Front End Technical Interview. 
+## Description 
 
 Tech Stack: React.js, Firebase, SCSS, Bootstrap
 
